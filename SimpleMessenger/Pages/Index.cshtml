@@ -1,0 +1,32 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Login page";
+}
+
+<body>
+    <div class="center">
+        <div class="row"><hr/></div>
+        
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="horizontal-center">
+                <label>User</label>
+                <input asp-for="UserName" />
+
+
+                <div class="row"></div>
+
+                <label>Chat</label>
+                <input asp-for="Chat" />
+
+                <div class="row"></div>
+
+                <input type="submit" id="sendButton" value="Join"/>
+            </div>
+        </form>
+        
+        <div class="row"><hr /></div>
+    </div>
+</body>

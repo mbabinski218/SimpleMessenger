@@ -1,0 +1,67 @@
+﻿@page
+@model SimpleMessenger.Pages.ChatModel
+@{
+    ViewData["Title"] = "Chat page";
+    ViewData["UserName"] = Model.AuthorName;
+}
+
+<body>
+    <div class="center">
+        <div class="header">
+            <div class="row">
+                <label>Chat: @ViewData.Model.Chat</label>
+            </div>
+
+            <div class="row"><hr/></div>
+        </div>
+
+        <ul class="content" id="messages"></ul>
+
+        <div class="footer">
+            <div class="row"><hr/></div>
+
+            <div class="inline">
+                <input class="textbox" type="text" id="message"/>
+                <input class="button" type="button" id="sendButton" value="Send"/>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl('/ChatHub').build();
+
+    document.getElementById("sendButton").disabled = true;
+
+    connection.on("ReceiveMessage", function (author, message, date) {
+        var encodedMsg = " [" + date + "] " + author + ": " + message;
+
+        var li = document.createElement("li");
+        li.textContent = encodedMsg;
+        document.getElementById("messages").appendChild(li);
+    });
+
+    connection.start().then(function () {
+        document.getElementById("sendButton").disabled = false;
+
+        connection.invoke("JoinGroup", '@Model.Chat').catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    document.getElementById("sendButton").addEventListener("click", function (event) {
+        var authorName = '@Model.AuthorName';
+        var content = document.getElementById("message").value;
+        var chat = '@Model.Chat';
+
+        connection.invoke("SendMessage", authorName, content, chat).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        event.preventDefault();
+    });
+</script>
