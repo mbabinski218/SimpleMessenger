@@ -57,6 +57,7 @@
         var authorName = '@Model.AuthorName';
         var content = document.getElementById("message").value;
         var chat = '@Model.Chat';
+        document.getElementById("message").value = '';
 
         connection.invoke("SendMessage", authorName, content, chat).catch(function (err) {
             return console.error(err.toString());
